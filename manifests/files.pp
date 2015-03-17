@@ -22,7 +22,6 @@
 #     swapfile => '/mnt/swap.55',
 #   }
 #
-#
 # == Authors
 #    @petems - Peter Souter
 #
@@ -31,6 +30,7 @@ define swap_file::files (
   $swapfile      = '/mnt/swap.1',
   $swapfilesize  = $::memorysize,
   $add_mount     = true,
+  $options       = 'defaults'
   $options       = 'defaults'
 )
 {
@@ -51,10 +51,9 @@ define swap_file::files (
       mode    => '0600',
       require => Exec["Create swap file ${swapfile}"],
     }
-    exec { "Attach swap file ${swapfile}":
-      command => "/sbin/mkswap ${swapfile} && /sbin/swapon ${swapfile}",
-      require => File[$swapfile],
-      unless  => "/sbin/swapon -s | grep ${swapfile}",
+    swap_file { $swapfile:
+      ensure  => 'present',
+      require => File[$swapfile]
     }
     if $add_mount {
       mount { $swapfile:
@@ -64,7 +63,7 @@ define swap_file::files (
         options => $options,
         dump    => 0,
         pass    => 0,
-        require => Exec["Attach swap file ${swapfile}"],
+        require => Swap_file[$swapfile],
       }
     }
   }
@@ -83,5 +82,4 @@ define swap_file::files (
       device => $swapfile,
     }
   }
-
 }
