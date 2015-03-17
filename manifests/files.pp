@@ -30,8 +30,7 @@ define swap_file::files (
   $swapfile      = '/mnt/swap.1',
   $swapfilesize  = $::memorysize,
   $add_mount     = true,
-  $options       = 'defaults'
-  $options       = 'defaults'
+  $options       = 'defaults',
 )
 {
   # Parameter validation

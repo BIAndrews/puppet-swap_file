@@ -18,7 +18,6 @@ group :development do
   gem 'puppet-blacksmith'
   gem 'guard-rake'
   gem 'puppet-module'
-  gem 'simplecov'
 end
 
 group :system_tests do
