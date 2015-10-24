@@ -67,9 +67,8 @@ define swap_file::files (
     }
   }
   elsif $ensure == 'absent' {
-    exec { "Detach swap file ${swapfile}":
-      command => "/sbin/swapoff ${swapfile}",
-      onlyif  => "/sbin/swapon -s | grep ${swapfile}",
+    swap_file { $swapfile:
+      ensure  => 'absent',
     }
     file { $swapfile:
       ensure  => absent,

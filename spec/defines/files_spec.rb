@@ -22,6 +22,12 @@ describe 'swap_file::files' do
       is_expected.to compile.with_all_deps
     end
     it do
+      is_expected.to contain_swap_file__files('default')
+    end
+    it do
+      is_expected.to contain_swap_file('/mnt/swap.1')
+    end
+    it do
       is_expected.to contain_exec('Create swap file /mnt/swap.1').
                with({"command"=>"/bin/dd if=/dev/zero of=/mnt/swap.1 bs=1M count=1073",
                      "creates"=>"/mnt/swap.1"})
@@ -42,11 +48,7 @@ describe 'swap_file::files' do
   context 'custom swapfilesize parameter' do
     let(:params) do
       {
-        #:ensure => "present",
-        #:swapfile => "/mnt/swap.1",
         :swapfilesize => '4.1 GB',
-        #:add_mount => true,
-        #:options => "defaults",
       }
     end
     it do
@@ -56,6 +58,25 @@ describe 'swap_file::files' do
       is_expected.to contain_exec('Create swap file /mnt/swap.1').
       with({"command"=>"/bin/dd if=/dev/zero of=/mnt/swap.1 bs=1M count=4402",
        "creates"=>"/mnt/swap.1"})
+    end
+  end
+
+  context 'ensure=>absent' do
+    let(:params) do
+      {
+        :ensure => 'absent',
+      }
+    end
+    it do
+      is_expected.to compile.with_all_deps
+    end
+    it do
+      is_expected.to contain_file('/mnt/swap.1').
+               with({"ensure"=>"absent",})
+    end
+    it do
+      is_expected.to contain_mount('/mnt/swap.1').
+               with({"ensure"=>"absent"})
     end
   end
 
